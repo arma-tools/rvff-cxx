@@ -1,0 +1,18 @@
+[package]
+name = "rvff-cxx"
+version = "0.1.0"
+license = "MIT"
+edition = "2021"
+
+[lib]
+crate-type = ["lib", "staticlib"]
+
+[dependencies]
+rvff = { path = "L:\\Repos\\rust\\aff-org\\rvff\\" }
+
+cxx = "1.0"
+
+anyhow = "1.0.70"
+
+[build-dependencies]
+cxx-build = "1.0"
