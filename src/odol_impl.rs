@@ -403,9 +403,8 @@ impl From<ODOL> for ODOLCxx {
     fn from(v: ODOL) -> Self {
         Self {
             version: v.version,
-            prefix: v.prefix.unwrap_or_default().to_string(),
             app_id: v.app_id,
-            muzzle_flash: v.muzzle_flash.unwrap_or_default().to_string(),
+            p3d_prefix: v.p3d_prefix.unwrap_or_default().to_string(),
             lod_count: v.lod_count,
             resolutions: v.resolutions.into_iter().map(|r| r.into()).collect(),
             model_info: v.model_info.into(),

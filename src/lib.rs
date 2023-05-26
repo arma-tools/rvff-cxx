@@ -7,7 +7,7 @@ mod pbo_impl;
 
 use std::{
     fs::File,
-    io::{BufReader, Cursor},
+    io::{BufReader, Cursor, Read, Seek},
 };
 
 use crate::oprw_impl::create_wrp_from_buf;
@@ -16,18 +16,19 @@ use crate::oprw_impl::create_wrp_from_vec;
 use bridge::{EntryCxx, LodCxx, MipmapCxx, ODOLCxx, PboCxx, ResolutionEnumCxx};
 use cxx::{CxxString, CxxVector};
 use rvff::{
+    core::read::ReadExtTrait,
     p3d::ODOL,
     paa::Paa,
     pbo::PboReader,
-    rap::{Cfg, CfgClass, CfgEntry, CfgValue, EntryReturn},
+    rap::{Cfg, CfgClass, CfgEntry, EntryReturn},
 };
 
-pub struct OdolLazyReaderCxx<'a> {
-    reader: Cursor<&'a [u8]>,
+pub struct OdolLazyReaderCxx {
+    reader: Cursor<Vec<u8>>,
     odol: ODOL,
 }
 
-impl<'a> OdolLazyReaderCxx<'a> {
+impl OdolLazyReaderCxx {
     pub fn read_lod(&mut self, resolution: ResolutionEnumCxx) -> anyhow::Result<LodCxx> {
         Ok(self
             .odol
@@ -49,14 +50,29 @@ pub fn create_odol_lazy_reader(buf: &CxxVector<u8>) -> anyhow::Result<Box<OdolLa
 }
 
 fn create_odol_lazy_reader_internal(buf: &[u8]) -> anyhow::Result<Box<OdolLazyReaderCxx>> {
-    let mut cursor = Cursor::new(buf);
+    let mut reader = Cursor::new(buf.to_owned());
 
-    let odol = ODOL::from_stream(&mut cursor)?;
+    let mut magic_buf = vec![0_u8; 4];
+    reader.read_exact(&mut magic_buf)?;
+    reader.rewind()?;
+    if magic_buf != b"ODOL" {
+        reader.read_u8()?;
+        reader.read_exact(&mut magic_buf)?;
+        if magic_buf == b"ODOL" {
+            let data = rvff::core::decompress_lzss_unk_size(&mut reader)?;
+            let mut cursor = Cursor::new(data);
 
-    Ok(Box::new(OdolLazyReaderCxx {
-        reader: cursor,
-        odol,
-    }))
+            let odol = ODOL::from_stream(&mut cursor)?;
+            return Ok(Box::new(OdolLazyReaderCxx {
+                reader: cursor,
+                odol,
+            }));
+        }
+    }
+
+    let odol = ODOL::from_stream(&mut reader)?;
+
+    Ok(Box::new(OdolLazyReaderCxx { reader, odol }))
 }
 
 pub struct PboReaderCxx {
@@ -82,8 +98,11 @@ impl PboReaderCxx {
     }
 
     pub fn get_entry_data(&mut self, entry_path: &CxxString) -> anyhow::Result<Vec<u8>> {
-        let entry = self.get_entry(entry_path)?;
-        Ok(entry.data)
+        if let Ok(entry) = self.get_entry(entry_path) {
+            Ok(entry.data)
+        } else {
+            Ok(Vec::new())
+        }
     }
 
     pub fn get_pbo(&self) -> PboCxx {
@@ -254,6 +273,17 @@ impl From<CfgClass> for CfgClassCxx {
     }
 }
 
+fn check_for_magic_and_decompress_lzss_file(
+    path: &CxxString,
+    magic: &CxxVector<u8>,
+) -> anyhow::Result<bool> {
+    let magic: Vec<u8> = magic.iter().copied().collect();
+    Ok(rvff::core::check_for_magic_and_decompress_lzss_file(
+        path.to_string(),
+        &magic,
+    )?)
+}
+
 #[cxx::bridge(namespace = "rvff::cxx")]
 mod bridge {
 
@@ -287,15 +317,11 @@ mod bridge {
         fn get_class_name(self: &CfgClassCxx) -> String;
 
         /// P3D
-        type OdolLazyReaderCxx<'a>;
+        type OdolLazyReaderCxx;
 
-        unsafe fn create_odol_lazy_reader<'a>(
-            buf: &'a CxxVector<u8>,
-        ) -> Result<Box<OdolLazyReaderCxx<'a>>>;
+        unsafe fn create_odol_lazy_reader(buf: &CxxVector<u8>) -> Result<Box<OdolLazyReaderCxx>>;
 
-        unsafe fn create_odol_lazy_reader_vec<'a>(
-            buf: &'a Vec<u8>,
-        ) -> Result<Box<OdolLazyReaderCxx<'a>>>;
+        unsafe fn create_odol_lazy_reader_vec(buf: &Vec<u8>) -> Result<Box<OdolLazyReaderCxx>>;
 
         fn read_lod(self: &mut OdolLazyReaderCxx, resolution: ResolutionEnumCxx) -> Result<LodCxx>;
         fn get_odol(self: &OdolLazyReaderCxx) -> ODOLCxx;
@@ -319,6 +345,12 @@ mod bridge {
 
         fn get_mipmap_from_paa(buf: &CxxVector<u8>, index: u32) -> Result<MipmapCxx>;
         fn get_mipmap_from_paa_vec(buf: &Vec<u8>, index: u32) -> Result<MipmapCxx>;
+
+        // Util
+        fn check_for_magic_and_decompress_lzss_file(
+            path: &CxxString,
+            magic: &CxxVector<u8>,
+        ) -> Result<bool>;
     }
 
     #[derive(Debug)]
@@ -1069,11 +1101,9 @@ mod bridge {
     pub struct ODOLCxx {
         pub version: u32,
 
-        pub prefix: String,
-
         pub app_id: u32,
 
-        pub muzzle_flash: String,
+        pub p3d_prefix: String,
 
         pub lod_count: u32,
 
