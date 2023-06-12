@@ -5,7 +5,7 @@ use rvff::wrp::{ClassedModel, MapData, Object, RoadNet, RoadPart, Texture};
 
 use crate::bridge::{
     self, ClassedModelCxx, MapType1Cxx, MapType2Cxx, MapType35Cxx, MapType3Cxx, MapType4Cxx,
-    MapType5Cxx, ObjectCxx, OprwCxx, RoadNetCxx, RoadPartCxx, TextureCxx,
+    MapType5Cxx, MapTypeRiverCxx, ObjectCxx, OprwCxx, RoadNetCxx, RoadPartCxx, TextureCxx,
 };
 
 impl From<Texture> for TextureCxx {
@@ -95,6 +95,7 @@ impl From<rvff::wrp::OPRW> for bridge::OprwCxx {
             map_infos_4: Vec::new(),
             map_infos_5: Vec::new(),
             map_infos_35: Vec::new(),
+            map_info_river: Vec::new(),
         };
 
         for map_info in v.map_infos {
@@ -144,6 +145,13 @@ impl From<rvff::wrp::OPRW> for bridge::OprwCxx {
                     line,
                     unknown,
                     type_id: map_info.id,
+                }),
+                MapData::MapTypeRiver {
+                    object_id, polygon, ..
+                } => oprw_cxx.map_info_river.push(MapTypeRiverCxx {
+                    type_id: map_info.id,
+                    object_id,
+                    polygon: polygon.iter().map(|x| (*x).into()).collect(),
                 }),
                 _ => unreachable!(),
             }

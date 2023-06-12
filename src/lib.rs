@@ -432,6 +432,7 @@ mod bridge {
         pub map_infos_4: Vec<MapType4Cxx>,
         pub map_infos_5: Vec<MapType5Cxx>,
         pub map_infos_35: Vec<MapType35Cxx>,
+        pub map_info_river: Vec<MapTypeRiverCxx>,
     }
 
     #[derive(Debug)]
@@ -534,6 +535,13 @@ mod bridge {
         object_id: u32,
         line: Vec<f32>,
         unknown: u8,
+    }
+
+    #[derive(Debug)]
+    pub struct MapTypeRiverCxx {
+        type_id: u32,
+        object_id: u32,
+        polygon: Vec<XYCxx>,
     }
 
     #[derive(Debug)]
