@@ -1,13 +1,11 @@
-use rvff::core::types::{
-    BoundingBoxBinrw, D3DColorValue, RGBAColor, TransformMatrixBinrw, XYBinrw, XYZTripletBinrw,
-};
+use rvff::core::types::{BoundingBox, D3DColorValue, RGBAColor, TransformMatrix, XYZTriplet, XY};
 
 use crate::bridge::{
     BoundingBoxCxx, D3DColorValueCxx, RGBAColorCxx, TransformMatrixCxx, XYCxx, XYZTripletCxx,
 };
 
-impl From<TransformMatrixBinrw> for TransformMatrixCxx {
-    fn from(value: TransformMatrixBinrw) -> Self {
+impl From<TransformMatrix> for TransformMatrixCxx {
+    fn from(value: TransformMatrix) -> Self {
         Self {
             _0: value.0.into(),
             _1: value.1.into(),
@@ -17,8 +15,8 @@ impl From<TransformMatrixBinrw> for TransformMatrixCxx {
     }
 }
 
-impl From<XYZTripletBinrw> for XYZTripletCxx {
-    fn from(value: XYZTripletBinrw) -> Self {
+impl From<XYZTriplet> for XYZTripletCxx {
+    fn from(value: XYZTriplet) -> Self {
         Self {
             x: value.x,
             y: value.y,
@@ -27,8 +25,8 @@ impl From<XYZTripletBinrw> for XYZTripletCxx {
     }
 }
 
-impl From<BoundingBoxBinrw> for BoundingBoxCxx {
-    fn from(value: BoundingBoxBinrw) -> Self {
+impl From<BoundingBox> for BoundingBoxCxx {
+    fn from(value: BoundingBox) -> Self {
         Self {
             a: value.a.into(),
             b: value.b.into(),
@@ -38,8 +36,8 @@ impl From<BoundingBoxBinrw> for BoundingBoxCxx {
     }
 }
 
-impl From<XYBinrw> for XYCxx {
-    fn from(value: XYBinrw) -> Self {
+impl From<XY> for XYCxx {
+    fn from(value: XY) -> Self {
         Self {
             x: value.x,
             y: value.y,
