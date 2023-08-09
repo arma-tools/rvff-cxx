@@ -8,7 +8,7 @@ edition = "2021"
 crate-type = ["lib", "staticlib"]
 
 [dependencies]
-rvff = { git = "https://github.com/arma-tools/rvff.git", branch = "cxx" }
+rvff = { git = "https://github.com/arma-tools/rvff.git", branch = "main" }
 
 cxx = "1.0"
 
