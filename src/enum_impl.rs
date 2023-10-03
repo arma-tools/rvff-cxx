@@ -277,15 +277,15 @@ impl From<VertexShaderIDEnum> for VertexShaderIDEnumCxx {
 impl From<EMainLight> for EMainLightCxx {
     fn from(value: EMainLight) -> Self {
         match value {
-            EMainLight::ML_None => EMainLightCxx::ML_None,
-            EMainLight::ML_Sun => EMainLightCxx::ML_Sun,
-            EMainLight::ML_Sky => EMainLightCxx::ML_Sky,
-            EMainLight::ML_Horizon => EMainLightCxx::ML_Horizon,
-            EMainLight::ML_Stars => EMainLightCxx::ML_Stars,
-            EMainLight::ML_SunObject => EMainLightCxx::ML_SunObject,
-            EMainLight::ML_SunHaloObject => EMainLightCxx::ML_SunHaloObject,
-            EMainLight::ML_MoonObject => EMainLightCxx::ML_MoonObject,
-            EMainLight::ML_MoonHaloObject => EMainLightCxx::ML_MoonHaloObject,
+            EMainLight::None => EMainLightCxx::None,
+            EMainLight::Sun => EMainLightCxx::Sun,
+            EMainLight::Sky => EMainLightCxx::Sky,
+            EMainLight::Horizon => EMainLightCxx::Horizon,
+            EMainLight::Stars => EMainLightCxx::Stars,
+            EMainLight::SunObject => EMainLightCxx::SunObject,
+            EMainLight::SunHaloObject => EMainLightCxx::SunHaloObject,
+            EMainLight::MoonObject => EMainLightCxx::MoonObject,
+            EMainLight::MoonHaloObject => EMainLightCxx::MoonHaloObject,
         }
     }
 }
@@ -390,11 +390,11 @@ impl From<MapType> for MapTypeCxx {
 impl From<SBSource> for SBSourceCxx {
     fn from(value: SBSource) -> Self {
         match value {
-            SBSource::SBS_Visual => SBSourceCxx::SBS_Visual,
-            SBSource::SBS_ShadowVolume => SBSourceCxx::SBS_ShadowVolume,
-            SBSource::SBS_Explicit => SBSourceCxx::SBS_Explicit,
-            SBSource::SBS_None => SBSourceCxx::SBS_None,
-            SBSource::SBS_VisualEx => SBSourceCxx::SBS_VisualEx,
+            SBSource::Visual => SBSourceCxx::Visual,
+            SBSource::ShadowVolume => SBSourceCxx::ShadowVolume,
+            SBSource::Explicit => SBSourceCxx::Explicit,
+            SBSource::None => SBSourceCxx::None,
+            SBSource::VisualEx => SBSourceCxx::VisualEx,
         }
     }
 }
@@ -444,10 +444,10 @@ impl From<ResolutionEnum> for ResolutionEnumCxx {
 impl From<EFogMode> for EFogModeCxx {
     fn from(value: EFogMode) -> Self {
         match value {
-            EFogMode::FM_None => EFogModeCxx::FM_None,
-            EFogMode::FM_Fog => EFogModeCxx::FM_Fog,
-            EFogMode::FM_Alpha => EFogModeCxx::FM_Alpha,
-            EFogMode::FM_FogAlpha => EFogModeCxx::FM_FogAlpha,
+            EFogMode::None => EFogModeCxx::None,
+            EFogMode::Fog => EFogModeCxx::Fog,
+            EFogMode::Alpha => EFogModeCxx::Alpha,
+            EFogMode::FogAlpha => EFogModeCxx::FogAlpha,
         }
     }
 }

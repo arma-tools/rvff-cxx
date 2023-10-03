@@ -177,6 +177,58 @@ impl CfgCxx {
         }
     }
 
+    pub fn get_entry_as_number(
+        &mut self,
+        config_path: &CxxVector<CxxString>,
+    ) -> anyhow::Result<i32> {
+        if let Some(entry) = self.get_entry(config_path) {
+            if let Some(val) = entry.as_long() {
+                Ok(val)
+            } else {
+                Err(anyhow::anyhow!("Not a long value!"))
+            }
+        } else {
+            Err(anyhow::Error::msg(format!(
+                "Entry '{}' not found!",
+                config_path
+                    .iter()
+                    .map(|x| x.to_str().unwrap_or_default())
+                    .collect::<Vec<&str>>()
+                    .join(" >> ")
+            )))
+        }
+    }
+
+    fn get_entry_as_array_float(
+        self: &mut CfgCxx,
+        config_path: &CxxVector<CxxString>,
+    ) -> anyhow::Result<Vec<f32>> {
+        if let Some(entry) = self.get_entry(config_path) {
+            if let Some(val) = entry.as_array() {
+                let mut arr = Vec::new();
+                for v in val {
+                    match v {
+                        rvff::rap::CfgValue::Float(f) => arr.push(f),
+                        rvff::rap::CfgValue::Long(l) => arr.push(l as f32),
+                        _ => return Err(anyhow::anyhow!("Not a numeric value!")),
+                    };
+                }
+                Ok(arr)
+            } else {
+                Err(anyhow::anyhow!("Not an array!"))
+            }
+        } else {
+            Err(anyhow::Error::msg(format!(
+                "Entry '{}' not found!",
+                config_path
+                    .iter()
+                    .map(|x| x.to_str().unwrap_or_default())
+                    .collect::<Vec<&str>>()
+                    .join(" >> ")
+            )))
+        }
+    }
+
     pub fn get_entry_as_entries(&mut self, config_path: &CxxVector<CxxString>) -> Vec<CfgEntryCxx> {
         if let Some(entry) = self.get_entry(config_path) {
             if let Some(class) = entry.as_class() {
@@ -296,6 +348,14 @@ mod bridge {
         fn create_cfg_path(path: &CxxString) -> Result<Box<CfgCxx>>;
         fn create_cfg_vec(buf: &Vec<u8>) -> Result<Box<CfgCxx>>;
         fn get_entry_as_string(self: &mut CfgCxx, config_path: &CxxVector<CxxString>) -> String;
+        fn get_entry_as_number(
+            self: &mut CfgCxx,
+            config_path: &CxxVector<CxxString>,
+        ) -> Result<i32>;
+        fn get_entry_as_array_float(
+            self: &mut CfgCxx,
+            config_path: &CxxVector<CxxString>,
+        ) -> Result<Vec<f32>>;
         fn get_entry_as_entries(
             self: &mut CfgCxx,
             config_path: &CxxVector<CxxString>,
@@ -873,25 +933,25 @@ mod bridge {
     #[allow(non_camel_case_types, clippy::enum_variant_names)]
 
     pub enum EFogModeCxx {
-        FM_None,
-        FM_Fog,
-        FM_Alpha,
-        FM_FogAlpha,
+        None,
+        Fog,
+        Alpha,
+        FogAlpha,
     }
 
     #[derive(Debug)]
     #[allow(non_camel_case_types, clippy::enum_variant_names)]
 
     pub enum EMainLightCxx {
-        ML_None,
-        ML_Sun,
-        ML_Sky,
-        ML_Horizon,
-        ML_Stars,
-        ML_SunObject,
-        ML_SunHaloObject,
-        ML_MoonObject,
-        ML_MoonHaloObject,
+        None,
+        Sun,
+        Sky,
+        Horizon,
+        Stars,
+        SunObject,
+        SunHaloObject,
+        MoonObject,
+        MoonHaloObject,
     }
 
     #[derive(Debug)]
@@ -1348,15 +1408,15 @@ mod bridge {
     #[derive(Debug)]
     #[allow(non_camel_case_types, clippy::enum_variant_names)]
     pub enum SBSourceCxx {
-        SBS_Visual = 0,
+        Visual = 0,
 
-        SBS_ShadowVolume = 1,
+        ShadowVolume = 1,
 
-        SBS_Explicit = 2,
+        Explicit = 2,
 
-        SBS_None = 3,
+        None = 3,
 
-        SBS_VisualEx = 4,
+        VisualEx = 4,
     }
 
     #[derive(Debug)]
