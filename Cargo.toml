@@ -1,5 +1,5 @@
 [package]
-name = "rvff-cxx"
+name = "rvff_cxx"
 version = "0.1.0"
 license = "MIT"
 edition = "2021"
