@@ -8,8 +8,9 @@ edition = "2021"
 crate-type = ["lib", "staticlib"]
 
 [dependencies]
-rvff = { git = "https://github.com/arma-tools/rvff.git", rev = "f8f248d2a6f286eb2071d515f127e219caced5f6" }
+rvff = { package = "arma-file-formats", git = "https://github.com/fank/arma-file-formats-rs.git", branch = "feat/odol-v75-support" }
 
+byteorder = "1.5"
 cxx = "1.0"
 
 anyhow = "1.0.70"

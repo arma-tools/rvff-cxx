@@ -15,12 +15,12 @@ use crate::oprw_impl::create_wrp_from_vec;
 
 use bridge::{EntryCxx, LodCxx, MipmapCxx, ODOLCxx, PboCxx, ResolutionEnumCxx};
 use cxx::{CxxString, CxxVector};
-use rvff::{
-    core::read::ReadExtTrait,
-    p3d::ODOL,
-    paa::Paa,
-    pbo::PboReader,
-    rap::{Cfg, CfgClass, CfgEntry, EntryReturn},
+use byteorder::ReadBytesExt;
+use rvff::real_virtuality::{
+        p3d::ODOL,
+        paa::Paa,
+        pbo::PboReader,
+        rap::{Cfg, CfgClass, CfgEntry, EntryReturn},
 };
 
 pub struct OdolLazyReaderCxx {
@@ -208,8 +208,8 @@ impl CfgCxx {
                 let mut arr = Vec::new();
                 for v in val {
                     match v {
-                        rvff::rap::CfgValue::Float(f) => arr.push(f),
-                        rvff::rap::CfgValue::Long(l) => arr.push(l as f32),
+                        rvff::real_virtuality::rap::CfgValue::Float(f) => arr.push(f),
+                        rvff::real_virtuality::rap::CfgValue::Long(l) => arr.push(l as f32),
                         _ => return Err(anyhow::anyhow!("Not a numeric value!")),
                     };
                 }

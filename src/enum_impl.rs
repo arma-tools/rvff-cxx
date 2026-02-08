@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use rvff::p3d::{
+use rvff::real_virtuality::p3d::{
     AnimAddress, AnimType, ClipFlags, ClipFlagsEnum, EFogMode, EMainLight, MapType, PixelShaderID,
     ResolutionEnum, SBSource, TextureFilterType, UVSource, VertexShaderID, VertexShaderIDEnum,
 };

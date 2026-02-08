@@ -1,4 +1,4 @@
-use rvff::core::types::{BoundingBox, D3DColorValue, RGBAColor, TransformMatrix, XYZTriplet, XY};
+use rvff::real_virtuality::types::{BoundingBox, D3DColorValue, RGBAColor, TransformMatrix, XYZTriplet, XY};
 
 use crate::bridge::{
     BoundingBoxCxx, D3DColorValueCxx, RGBAColorCxx, TransformMatrixCxx, XYCxx, XYZTripletCxx,

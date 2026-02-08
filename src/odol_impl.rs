@@ -1,5 +1,5 @@
-use rvff::{
-    core::types::STPair,
+use rvff::real_virtuality::{
+    types::STPair,
     p3d::{
         AnimBones, AnimationClass, AnimationRTPair, AnimationRTWeight, Animations, Anims2Bones,
         Bone, Bone2AnimClassList, BoneLink, Bones2Anims, CompressedVertexIndexArray, FaceData, Lod,

@@ -1,4 +1,4 @@
-use rvff::paa::Mipmap;
+use rvff::real_virtuality::paa::Mipmap;
 
 use crate::bridge::MipmapCxx;
 

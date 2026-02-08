@@ -1,7 +1,7 @@
 use std::io::Cursor;
 
 use cxx::CxxVector;
-use rvff::wrp::{ClassedModel, MapData, Object, RoadNet, RoadPart, Texture};
+use rvff::real_virtuality::wrp::{ClassedModel, MapData, Object, RoadNet, RoadPart, Texture};
 
 use crate::bridge::{
     self, ClassedModelCxx, MapType1Cxx, MapType2Cxx, MapType35Cxx, MapType3Cxx, MapType4Cxx,
@@ -58,8 +58,8 @@ impl From<Object> for ObjectCxx {
     }
 }
 
-impl From<rvff::wrp::OPRW> for bridge::OprwCxx {
-    fn from(v: rvff::wrp::OPRW) -> Self {
+impl From<rvff::real_virtuality::wrp::OPRW> for bridge::OprwCxx {
+    fn from(v: rvff::real_virtuality::wrp::OPRW) -> Self {
         //for
 
         let mut oprw_cxx = bridge::OprwCxx {
@@ -168,7 +168,7 @@ pub fn create_wrp_from_buf(buf: &CxxVector<u8>) -> anyhow::Result<OprwCxx> {
 pub fn create_wrp_from_vec(buf: &[u8]) -> anyhow::Result<OprwCxx> {
     let mut cursor = Cursor::new(buf);
 
-    let oprw = rvff::wrp::OPRW::from_read(&mut cursor)?;
+    let oprw = rvff::real_virtuality::wrp::OPRW::from_read(&mut cursor)?;
 
     Ok(oprw.into())
 }

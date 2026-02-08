@@ -1,4 +1,4 @@
-use rvff::pbo::{Entry, Pbo};
+use rvff::real_virtuality::pbo::{Entry, Pbo};
 
 use crate::bridge::{EntryCxx, PboCxx, PboPropertyCxx};
 
